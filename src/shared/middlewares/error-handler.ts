@@ -3,6 +3,7 @@ import { ZodError } from "zod";
 import { Prisma } from "../../../generated/prisma/client";
 
 import { AppError } from "@/shared/errors/app-error";
+import { logger } from "@/shared/utils/logger";
 
 export const errorHandler = (
   err: Error,
@@ -84,6 +85,8 @@ export const errorHandler = (
   /**
    * Unknown Error
    */
+  logger.error(err, "Unhandled application error");
+
   return res.status(500).json({
     success: false,
     message: "Internal Server Error",
