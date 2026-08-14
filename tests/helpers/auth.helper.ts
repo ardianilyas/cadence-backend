@@ -1,7 +1,7 @@
 import request from "supertest";
-import app from "../../src/server";
-import { prisma } from "../../src/db";
-import type { UserRole } from "../../src/shared/types/express";
+import app from "@/server";
+import { prisma } from "@/shared/db";
+import type { UserRole } from "@/shared/types/express";
 
 export async function authenticate(role: UserRole = "user") {
   const agent = request.agent(app);

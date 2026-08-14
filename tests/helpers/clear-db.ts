@@ -1,4 +1,4 @@
-import { prisma } from "../../src/db";
+import { prisma } from "@/shared/db";
 
 export async function clearDb() {
   await prisma.$executeRawUnsafe(`
