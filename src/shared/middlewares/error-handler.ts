@@ -1,7 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
-import { Prisma } from "../../../generated/prisma/client";
-
+import { Prisma } from "@/shared/db";
 import { AppError } from "@/shared/errors/app-error";
 import { logger } from "@/shared/utils/logger";
 
@@ -79,6 +78,7 @@ export const errorHandler = (
     return res.status(err.statusCode).json({
       success: false,
       message: err.message,
+      ...(err.details && { errors: err.details }),
     });
   }
 

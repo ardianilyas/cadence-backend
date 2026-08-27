@@ -1,4 +1,4 @@
-import { PrismaClient } from "../../../generated/prisma/client";
+import { PrismaClient, Prisma } from "../../../generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 import { env } from "@/shared/config/env";
@@ -11,3 +11,6 @@ const adapter = new PrismaPg(pool);
 
 export const prisma = new PrismaClient({ adapter });
 export const db = prisma;
+
+export { Prisma, PrismaClient };
+export type { Role } from "../../../generated/prisma/client";
