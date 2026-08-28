@@ -5,7 +5,7 @@ import { errorHandler } from "@/shared/middlewares/error-handler";
 import { httpLogger } from "@/shared/middlewares/http-logger";
 import { logger } from "@/shared/utils/logger";
 import { env } from "@/shared/config/env";
-import { prisma } from "@/shared/db";
+import { pool } from "@/shared/db";
 import { NotFoundError } from "@/shared/errors/not-found";
 import apiRoute from "@/shared/routes";
 
@@ -36,7 +36,7 @@ const handleShutdown = async (signal: string) => {
   logger.info(`Received ${signal}. Shutting down gracefully...`);
   server.close(async () => {
     try {
-      await prisma.$disconnect();
+      await pool.end();
       logger.info("Database disconnected. Server stopped.");
       process.exit(0);
     } catch (error) {

@@ -15,11 +15,11 @@ A modern backend boilerplate using **Express.js**, **TypeScript**, **Better Auth
 
 ```text
 .
-├── prisma/             # Prisma schema and migrations
-│   └── schema.prisma
+├── prisma/             # Prisma 8 contract schema and migrations
+│   └── contract.prisma
 ├── src/                # Application source code
 │   ├── config/         # Environment variables and configurations
-│   ├── db/             # Prisma client initialization
+│   ├── db/             # Prisma 8 runtime client initialization
 │   ├── errors/         # Custom error classes (AppError, NotFound, etc.)
 │   ├── lib/            # External library setup (e.g., Better Auth configuration)
 │   ├── middlewares/    # Express middlewares (error handler, auth guard, roles)
@@ -48,10 +48,10 @@ A modern backend boilerplate using **Express.js**, **TypeScript**, **Better Auth
    ```
 
 3. **Database Setup**
-   Generate Prisma client and push database schema:
+   Emit the Prisma 8 contract artifacts and apply migrations:
    ```bash
    bun run db:generate
-   bun run db:push
+   bun run db:migrate
    ```
 
 4. **Run the server**

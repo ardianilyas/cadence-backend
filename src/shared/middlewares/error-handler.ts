@@ -1,6 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
-import { Prisma } from "@/shared/db";
 import { AppError } from "@/shared/errors/app-error";
 import { logger } from "@/shared/utils/logger";
 
@@ -25,50 +24,39 @@ export const errorHandler = (
   }
 
   /**
-   * Prisma Known Request Errors
+   * Database Errors (PostgreSQL / Prisma)
    */
-  if (err instanceof Prisma.PrismaClientKnownRequestError) {
-    switch (err.code) {
+  const dbErr = err as unknown as { code?: string; detail?: string; meta?: { target?: unknown; cause?: string } };
+  if (dbErr.code) {
+    switch (dbErr.code) {
+      case "23505":
       case "P2002": {
-        const target = Array.isArray(err.meta?.target)
-          ? err.meta.target.join(", ")
-          : err.meta?.target;
+        const target =
+          dbErr.detail ||
+          (Array.isArray(dbErr.meta?.target)
+            ? (dbErr.meta.target as string[]).join(", ")
+            : (dbErr.meta?.target as string | undefined));
         return res.status(409).json({
           success: false,
           message: target
-            ? `Unique constraint violation on field(s): ${target}`
+            ? `Unique constraint violation: ${target}`
             : "A record with this value already exists",
         });
       }
-      case "P2025": {
-        return res.status(404).json({
-          success: false,
-          message: (err.meta?.cause as string) || "Record not found",
-        });
-      }
+      case "23503":
       case "P2003": {
         return res.status(400).json({
           success: false,
           message: "Foreign key constraint failed",
         });
       }
-      default: {
-        return res.status(400).json({
+      case "P2025": {
+        return res.status(404).json({
           success: false,
-          message: `Database error: ${err.message}`,
+          message: dbErr.meta?.cause || "Record not found",
         });
       }
     }
-  }
-
-  /**
-   * Prisma Validation Error
-   */
-  if (err instanceof Prisma.PrismaClientValidationError) {
-    return res.status(400).json({
-      success: false,
-      message: "Database validation error",
-    });
   }
 
   /**

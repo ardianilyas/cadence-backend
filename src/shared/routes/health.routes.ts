@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { prisma } from "@/shared/db";
+import { pool } from "@/shared/db";
 import { asyncHandler } from "@/shared/utils/async-handler";
 
 const router = Router();
@@ -9,7 +9,7 @@ router.get(
   asyncHandler(async (_req, res) => {
     let dbStatus = "up";
     try {
-      await prisma.$queryRaw`SELECT 1`;
+      await pool.query("SELECT 1");
     } catch {
       dbStatus = "down";
     }

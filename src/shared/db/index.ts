@@ -1,16 +1,19 @@
-import { PrismaClient, Prisma } from "../../../generated/prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
+import postgres from "@prisma/orm-postgres/runtime";
+import type { Contract } from "../../../generated/prisma/contract";
+import contractJson from "../../../generated/prisma/contract.json" with { type: "json" };
 import pg from "pg";
 import { env } from "@/shared/config/env";
 
-const pool = new pg.Pool({
+export const pool = new pg.Pool({
   connectionString: env.DATABASE_URL,
 });
 
-const adapter = new PrismaPg(pool);
+export const db = postgres<Contract>({
+  contractJson,
+  url: env.DATABASE_URL,
+});
 
-export const prisma = new PrismaClient({ adapter });
-export const db = prisma;
+export const prisma = db;
 
-export { Prisma, PrismaClient };
-export type { Role } from "../../../generated/prisma/client";
+export type { Contract };
+export type Role = "admin" | "user";
