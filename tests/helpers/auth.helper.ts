@@ -1,6 +1,6 @@
 import request from "supertest";
 import app from "@/server";
-import { pool } from "@/shared/db";
+import { prisma } from "@/shared/db";
 import type { UserRole } from "@/shared/types/express";
 
 export async function authenticate(role: UserRole = "user") {
@@ -16,7 +16,10 @@ export async function authenticate(role: UserRole = "user") {
     .post("/api/auth/sign-up/email")
     .send(user);
 
-  await pool.query('UPDATE "user" SET role = $1 WHERE email = $2', [role, user.email]);
+  await prisma.user.update({
+    where: { email: user.email },
+    data: { role }
+  });
 
   await agent
     .post("/api/auth/sign-in/email")
