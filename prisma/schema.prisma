@@ -12,19 +12,27 @@ enum Role {
   user
 }
 
-model User {
-  id            String    @id
-  name          String
-  email         String    @unique
-  emailVerified Boolean   @default(false) @map("email_verified")
-  image         String?
-  role          Role?     @default(user)
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
-  sessions      Session[]
-  accounts      Account[]
+enum WorkspaceRole {
+  ProjectManager   @map("Project Manager")
+  Developer
+  QualityAssurance @map("Quality Assurance")
+}
 
-  @@map("user")
+model User {
+  id                String            @id
+  name              String
+  email             String            @unique
+  emailVerified     Boolean           @default(false) @map("email_verified")
+  image             String?
+  role              Role?             @default(user)
+  createdAt         DateTime          @default(now()) @map("created_at")
+  updatedAt         DateTime          @updatedAt @map("updated_at")
+  sessions          Session[]
+  accounts          Account[]
+  createdWorkspaces Workspace[]       @relation("WorkspaceAuthor")
+  workspaceMembers  WorkspaceMember[]
+
+  @@map("users")
 }
 
 model Session {
@@ -39,7 +47,7 @@ model Session {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
-  @@map("session")
+  @@map("sessions")
 }
 
 model Account {
@@ -59,7 +67,7 @@ model Account {
   updatedAt             DateTime  @updatedAt @map("updated_at")
 
   @@index([userId])
-  @@map("account")
+  @@map("accounts")
 }
 
 model Verification {
@@ -71,5 +79,34 @@ model Verification {
   updatedAt  DateTime @updatedAt @map("updated_at")
 
   @@index([identifier])
-  @@map("verification")
+  @@map("verifications")
+}
+
+model Workspace {
+  id          String @id @default(uuid())
+  name        String
+  description String
+  authorId    String
+  author      User   @relation("WorkspaceAuthor", fields: [authorId], references: [id])
+
+  workspaceMembers WorkspaceMember[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("workspaces")
+}
+
+model WorkspaceMember {
+  id          String        @id @default(uuid())
+  workspaceId String
+  userId      String
+  role        WorkspaceRole @default(Developer)
+  joinedAt    DateTime      @default(now())
+  workspace   Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, userId])
+  @@index([workspaceId, userId])
+  @@map("workspace_member")
 }
