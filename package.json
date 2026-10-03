@@ -12,6 +12,7 @@
     "db:studio": "prisma studio"
   },
   "devDependencies": {
+    "@faker-js/faker": "^10.6.0",
     "@types/bun": "latest",
     "@types/express": "^5.0.6",
     "@types/pg": "^8.11.11",

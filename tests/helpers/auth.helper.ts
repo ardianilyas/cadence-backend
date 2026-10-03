@@ -2,24 +2,27 @@ import request from "supertest";
 import app from "@/server";
 import { prisma } from "@/shared/db";
 import type { UserRole } from "@/shared/types/express";
+import { faker } from "@faker-js/faker";
 
 export async function authenticate(role: UserRole = "user") {
   const agent = request.agent(app);
 
   const user = {
-    name: "Test User",
-    email: "test@example.com",
-    password: "password123"
+    name: faker.internet.displayName(),
+    email: faker.internet.email(),
+    password: "developer"
   };
 
   await agent
     .post("/api/auth/sign-up/email")
     .send(user);
 
-  await prisma.user.update({
+  const userData = await prisma.user.update({
     where: { email: user.email },
     data: { role }
   });
+
+  const userId = userData.id;
 
   await agent
     .post("/api/auth/sign-in/email")
@@ -30,6 +33,7 @@ export async function authenticate(role: UserRole = "user") {
 
   return {
     user,
+    userId,
     agent
   };
 }
