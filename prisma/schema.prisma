@@ -13,9 +13,9 @@ enum Role {
 }
 
 enum WorkspaceRole {
-  ProjectManager   @map("Project Manager")
+  Project_Manager   @map("Project Manager")
   Developer
-  QualityAssurance @map("Quality Assurance")
+  Quality_Assurance @map("Quality Assurance")
 }
 
 model User {

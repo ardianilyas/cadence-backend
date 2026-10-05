@@ -6,5 +6,6 @@ export const WORKSPACE_TEST_ROUTE = {
   CREATE_WORKSPACE: `${WORKSPACE_ROUTE_PREFIX}`,
   UPDATE_WORKSPACE: (id: string) => `${WORKSPACE_ROUTE_PREFIX}/${id}`,
   DELETE_WORKSPACE: (id: string) => `${WORKSPACE_ROUTE_PREFIX}/${id}`,
+  ADD_WORKSPACE_MEMBER: (id: string) => `${WORKSPACE_ROUTE_PREFIX}/${id}/members`,
 }
 
