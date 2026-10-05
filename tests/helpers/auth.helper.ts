@@ -13,12 +13,14 @@ export async function authenticate(role: UserRole = "user") {
     password: "developer"
   };
 
-  await agent
+  const auth = await agent
     .post("/api/auth/sign-up/email")
     .send(user);
 
+  const id = auth.body.user.id;
+
   const userData = await prisma.user.update({
-    where: { email: user.email },
+    where: { id },
     data: { role }
   });
 

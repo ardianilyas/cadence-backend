@@ -2,9 +2,12 @@ import { prisma } from "@/shared/db";
 
 export async function clearDb() {
   await prisma.$executeRawUnsafe(`
-    DELETE FROM "session";
-    DELETE FROM "account";
-    DELETE FROM "user";
-    DELETE FROM "verification";
+    DELETE FROM "workspaces";
+    DELETE FROM "workspace_member";
+    DELETE FROM "sessions";
+    DELETE FROM "accounts";
+    DELETE FROM "verifications";
+    DELETE FROM "users";
+    
   `);
 }

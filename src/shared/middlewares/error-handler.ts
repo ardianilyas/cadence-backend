@@ -41,9 +41,10 @@ export const errorHandler = (
         });
       }
       case "P2025": {
+        const modelName = err.meta?.modelName;
         return res.status(404).json({
           success: false,
-          message: (err.meta?.cause as string) || "Record not found",
+          message: `${modelName} not found` || "Record not found",
         });
       }
       case "P2003": {
