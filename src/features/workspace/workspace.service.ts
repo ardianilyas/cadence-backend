@@ -1,5 +1,6 @@
 import { prisma } from "@/shared/lib/prisma.ts";
 import type { CreateWorkspaceDto, UpdateWorkspaceDto } from "@/features/workspace/workspace.dto.ts";
+import type { WorkspaceRole } from "../../../generated/prisma/enums.ts";
 
 export class WorkspaceService {
   async getWorkspacesByUserId(authorId: string) {
@@ -20,8 +21,19 @@ export class WorkspaceService {
 
   async createWorkspace(input: CreateWorkspaceDto, authorId: string) {
     const data = { ...input, authorId };
+
+    const role: WorkspaceRole = "Project_Manager";
+
     return prisma.workspace.create({
-      data
+      data: {
+        ...data,
+        workspaceMembers: {
+          create: {
+            userId: authorId,
+            role
+          }
+        }
+      },
     });
   }
 

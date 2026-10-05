@@ -42,6 +42,8 @@ describe("Create Workspace", () => {
   it('should return 201 when data is valid and created', async () => {
     const response = await user.post(WORKSPACE_TEST_ROUTE.CREATE_WORKSPACE).send(payload);
 
+    console.log(response);
+
     expect(response.status).toBe(201);
     expect(response.body.data.name).toBe(payload.name);
     expect(response.body.data.description).toBe(payload.description);
