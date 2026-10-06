@@ -18,6 +18,13 @@ enum WorkspaceRole {
   Quality_Assurance @map("Quality Assurance")
 }
 
+enum ProjectStatus {
+  DRAFT
+  ACTIVE
+  DELAYED
+  COMPLETED
+}
+
 model User {
   id                String            @id
   name              String
@@ -31,6 +38,7 @@ model User {
   accounts          Account[]
   createdWorkspaces Workspace[]       @relation("WorkspaceAuthor")
   workspaceMembers  WorkspaceMember[]
+  projects          Project[]         @relation("ProjectAuthor")
 
   @@map("users")
 }
@@ -91,8 +99,9 @@ model Workspace {
 
   workspaceMembers WorkspaceMember[]
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  projects  Project[]
 
   @@map("workspaces")
 }
@@ -109,4 +118,26 @@ model WorkspaceMember {
   @@unique([workspaceId, userId])
   @@index([workspaceId, userId])
   @@map("workspace_member")
+}
+
+model Project {
+  id          String @id @default(uuid())
+  name        String
+  description String
+
+  authorId String
+  author   User   @relation("ProjectAuthor", fields: [authorId], references: [id])
+
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  status ProjectStatus @default(ACTIVE)
+
+  startDate DateTime @default(now()) @map("start_date")
+  dueDate   DateTime @map("due_date")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("projects")
 }
