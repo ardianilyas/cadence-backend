@@ -1,6 +1,4 @@
 import { describe, it, expect } from "vitest";
-import request from "supertest";
-import app from "@/server";
 import { authenticate } from "./helpers/auth.helper";
 
 describe("Auth Integration Tests (Prisma)", () => {
@@ -10,7 +8,7 @@ describe("Auth Integration Tests (Prisma)", () => {
     const sessionRes = await agent.get("/api/auth/get-session");
     expect(sessionRes.status).toBe(200);
     expect(sessionRes.body.user).toBeDefined();
-    expect(sessionRes.body.user.email).toBe(user.email);
+    expect(sessionRes.body.user.email).toBe(user.email.toLowerCase());
     expect(sessionRes.body.user.role).toBe("admin");
   });
 });

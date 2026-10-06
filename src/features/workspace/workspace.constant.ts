@@ -1,0 +1,11 @@
+const WORKSPACE_ROUTE_PREFIX = '/api/workspaces';
+
+export const WORKSPACE_TEST_ROUTE = {
+  GET_WORKSPACES: `${WORKSPACE_ROUTE_PREFIX}`,
+  GET_WORKSPACE: (id: string) => `${WORKSPACE_ROUTE_PREFIX}/${id}`,
+  CREATE_WORKSPACE: `${WORKSPACE_ROUTE_PREFIX}`,
+  UPDATE_WORKSPACE: (id: string) => `${WORKSPACE_ROUTE_PREFIX}/${id}`,
+  DELETE_WORKSPACE: (id: string) => `${WORKSPACE_ROUTE_PREFIX}/${id}`,
+  ADD_WORKSPACE_MEMBER: (id: string) => `${WORKSPACE_ROUTE_PREFIX}/${id}/members`,
+}
+

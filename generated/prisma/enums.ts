@@ -18,9 +18,9 @@ export type Role = (typeof Role)[keyof typeof Role]
 
 
 export const WorkspaceRole = {
-  ProjectManager: 'ProjectManager',
+  Project_Manager: 'Project_Manager',
   Developer: 'Developer',
-  QualityAssurance: 'QualityAssurance'
+  Quality_Assurance: 'Quality_Assurance'
 } as const
 
 export type WorkspaceRole = (typeof WorkspaceRole)[keyof typeof WorkspaceRole]
