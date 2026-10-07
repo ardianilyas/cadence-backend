@@ -10,5 +10,6 @@ export const ERROR_MESSAGE = {
   BAD_REQUEST: "Bad Request",
   VALIDATOIN_FAILED: "Validation Error",
   UNAUTHORIZED: "Unauthorized",
-  FORBIDDEN: "Forbidden"
+  FORBIDDEN: "Forbidden",
+  FOREIGN_KEY_CONSTRAINED: "Foreign key constraint failed"
 }
