@@ -11,18 +11,19 @@ export class ProjectService {
   }
 
   async getProjectById(id: string) {
-    return prisma.project.findMany({
+    return prisma.project.findUniqueOrThrow({
       where: {
         id
       }
     });
   }
 
-  async createProject(input: CreateProjectDto, authorId: string) {
+  async createProject(input: CreateProjectDto, authorId: string, workspaceId: string) {
     return prisma.project.create({
       data: {
         ...input,
         authorId,
+        workspaceId,
       }
     });
   }

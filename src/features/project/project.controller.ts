@@ -5,7 +5,7 @@ import type { Response } from "express";
 import { validate } from "@/shared/utils/validate.ts";
 import { getWorkspaceDto } from "@/features/workspace/workspace.dto.ts";
 import { sendSuccess } from "@/shared/utils/response.ts";
-import { createProjectDto, getProjectDto } from "@/features/project/project.dto.ts";
+import { createProjectDto, getProjectDto, updateProjectDto } from "@/features/project/project.dto.ts";
 
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
@@ -25,15 +25,16 @@ export class ProjectController {
   });
 
   createProject = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const workspaceId = validate(getWorkspaceDto, req.params.workspaceId);
     const input = validate(createProjectDto, req.body);
-    const project = await this.projectService.createProject(input, req.auth.user.id);
+    const project = await this.projectService.createProject(input, req.auth.user.id, workspaceId);
 
     return sendSuccess(res, "Project created", project, 201);
   });
 
   updateProject = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
     const projectId = validate(getProjectDto, req.params.id);
-    const input = validate(createProjectDto, req.body);
+    const input = validate(updateProjectDto, req.body);
     const project = await this.projectService.updateProject(input, projectId);
 
     return sendSuccess(res, "Project updated", project);
