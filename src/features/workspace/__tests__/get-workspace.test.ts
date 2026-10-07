@@ -3,7 +3,7 @@ import request from "supertest";
 import { authenticate } from "../../../../tests/helpers/auth.helper.ts";
 import { createTestWorkspace } from "@/features/workspace/__tests__/helpers/create-test-workspace.ts";
 import app from "@/server.ts";
-import { WORKSPACE_TEST_ROUTE } from "@/features/workspace/workspace.constant.ts";
+import { WORKSPACE_NOT_FOUND, WORKSPACE_TEST_ROUTE } from "@/features/workspace/workspace.constant.ts";
 import { AUTH_MESSAGE, AUTH_STATUS_CODE } from "@/shared/constants/auth.constants.ts";
 import { INVALID_UUID } from "@/shared/constants/test.constant.ts";
 import { ERROR_STATUS_CODE } from "@/shared/constants/error.constant.ts";
@@ -31,7 +31,7 @@ describe("Get Workspace", () => {
     console.log(res.body);
 
     expect(res.status).toBe(ERROR_STATUS_CODE.NOT_FOUND);
-    expect(res.body.message).toBe("Workspace not found");
+    expect(res.body.message).toBe(WORKSPACE_NOT_FOUND);
   });
 
   it('should return 200 when id is valid', async () => {

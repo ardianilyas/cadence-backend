@@ -1,3 +1,6 @@
+export const WORKSPACE_NOT_FOUND = "Workspace not found";
+export const INVALID_WORKSPACE_ID = "Invalid workspace id format";
+
 const WORKSPACE_ROUTE_PREFIX = '/api/workspaces';
 
 export const WORKSPACE_TEST_ROUTE = {
