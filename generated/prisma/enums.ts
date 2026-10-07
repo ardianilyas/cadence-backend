@@ -24,3 +24,13 @@ export const WorkspaceRole = {
 } as const
 
 export type WorkspaceRole = (typeof WorkspaceRole)[keyof typeof WorkspaceRole]
+
+
+export const ProjectStatus = {
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  DELAYED: 'DELAYED',
+  COMPLETED: 'COMPLETED'
+} as const
+
+export type ProjectStatus = (typeof ProjectStatus)[keyof typeof ProjectStatus]
