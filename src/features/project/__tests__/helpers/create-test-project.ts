@@ -8,5 +8,5 @@ export async function createTestProject(authorId: string) {
   if (!project[0]?.id) throw new Error("Failed to create project");
   const projectId = project[0].id;
 
-  return { projectId, workspaceId};
+  return { projectId, workspaceId };
 }
