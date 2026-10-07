@@ -1,9 +1,10 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import request from "supertest";
 import { authenticate } from "../../../../tests/helpers/auth.helper.ts";
-import { WORKSPACE_TEST_ROUTE } from "@/features/workspace/workspace.constant.ts";
+import { MEMBER_SUCCESS_MESSAGE, WORKSPACE_TEST_ROUTE } from "@/features/workspace/workspace.constant.ts";
 import { createTestWorkspace } from "@/features/workspace/__tests__/helpers/create-test-workspace.ts";
 import type { AddMemberDto } from "@/features/workspace/member.dto.ts";
+import { ERROR_MESSAGE } from "@/shared/constants/error.constant.ts";
 
 describe("Add Workspace Member", () => {
   let user: ReturnType<typeof request.agent>;
@@ -20,6 +21,14 @@ describe("Add Workspace Member", () => {
     newMemberId = userId;
   });
 
+  it('should return 400 when data is invalid', async () => {
+    const res = await user.post(WORKSPACE_TEST_ROUTE.ADD_WORKSPACE_MEMBER(workspaceId)).send({});
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toBe(ERROR_MESSAGE.VALIDATOIN_FAILED);
+    expect(res.body.errors).toBeDefined();
+  });
+
   it('should return 201 when data is valid and member added to workspace', async () => {
     const payload: AddMemberDto = {
       userId: newMemberId,
@@ -31,7 +40,7 @@ describe("Add Workspace Member", () => {
     console.log(res.body.data);
 
     expect(res.status).toBe(201);
-    expect(res.body.message).toBe("Member added to workspace");
+    expect(res.body.message).toBe(MEMBER_SUCCESS_MESSAGE.ADD_MEMBER_TO_WORKSPACE);
     expect(res.body.data.workspaceId).toBe(workspaceId);
     expect(res.body.data.userId).toBe(newMemberId);
     expect(res.body.data.role).toBe(payload.role);

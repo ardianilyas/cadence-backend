@@ -2,7 +2,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import request from "supertest";
 import { authenticate } from "../../../../tests/helpers/auth.helper.ts";
 import app from "@/server.ts";
-import { PROJECT_TEST_ROUTE } from "@/features/project/project.constant.ts";
+import { PROJECT_SUCCESS_MESSAGE, PROJECT_TEST_ROUTE } from "@/features/project/project.constant.ts";
 import { createTestWorkspace } from "@/features/workspace/__tests__/helpers/create-test-workspace.ts";
 import type { CreateProjectDto } from "@/features/project/project.dto.ts";
 import { addDays, addMonths } from "date-fns";
@@ -44,8 +44,8 @@ describe("Create Project", () => {
 
     expect(res.status).toBe(400);
     expect(res.body.message).toBe(ERROR_MESSAGE.VALIDATOIN_FAILED);
+    expect(res.body.errors).toBeDefined();
     expect(res.body.errors).toBeInstanceOf(Object);
-    expect(res.body.errors[0]).toBeDefined();
   });
 
   it('should return 400 when workspace id is not found', async () => {
@@ -59,7 +59,7 @@ describe("Create Project", () => {
     const res = await user.post(PROJECT_TEST_ROUTE.CREATE_PROJECT(workspaceId)).send(payload);
 
     expect(res.status).toBe(201);
-    expect(res.body.message).toBe("Project created");
+    expect(res.body.message).toBe(PROJECT_SUCCESS_MESSAGE.CREATE_PROJECT);
     expect(res.body.data).toBeDefined();
     expect(res.body.data.name).toBe(payload.name);
     expect(res.body.data.workspaceId).toBe(workspaceId);

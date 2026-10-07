@@ -1,11 +1,12 @@
 import { z } from "zod";
+import { WORKSPACE_ERROR_VALIDATION } from "@/features/workspace/workspace.constant.ts";
 
 export const createWorkspaceDto = z.object({
-  name: z.string().min(3, { error: "Name must be at least 3 characters long" }).max(50, { error: "Name must be at most 50 characters long" }),
-  description: z.string().min(3, { error: "Description must be at least 3 characters long" }),
+  name: z.string().min(3, { error: WORKSPACE_ERROR_VALIDATION.NAME.MIN }).max(50, { error: WORKSPACE_ERROR_VALIDATION.NAME.MAX }),
+  description: z.string().min(3, { error: WORKSPACE_ERROR_VALIDATION.DESCRIPTION.MIN }),
 });
 export const updateWorkspaceDto = createWorkspaceDto.partial();
-export const getWorkspaceDto = z.uuid({ error: "Invalid workspace id format" });
+export const getWorkspaceDto = z.uuid({ error: WORKSPACE_ERROR_VALIDATION.ID });
 
 export type CreateWorkspaceDto = z.infer<typeof createWorkspaceDto>;
 export type UpdateWorkspaceDto = z.infer<typeof updateWorkspaceDto>;

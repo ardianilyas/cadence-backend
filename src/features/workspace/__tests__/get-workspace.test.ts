@@ -3,7 +3,11 @@ import request from "supertest";
 import { authenticate } from "../../../../tests/helpers/auth.helper.ts";
 import { createTestWorkspace } from "@/features/workspace/__tests__/helpers/create-test-workspace.ts";
 import app from "@/server.ts";
-import { WORKSPACE_NOT_FOUND, WORKSPACE_TEST_ROUTE } from "@/features/workspace/workspace.constant.ts";
+import {
+  WORKSPACE_ERROR_VALIDATION,
+  WORKSPACE_NOT_FOUND,
+  WORKSPACE_TEST_ROUTE
+} from "@/features/workspace/workspace.constant.ts";
 import { AUTH_MESSAGE, AUTH_STATUS_CODE } from "@/shared/constants/auth.constants.ts";
 import { INVALID_UUID } from "@/shared/constants/test.constant.ts";
 import { ERROR_STATUS_CODE } from "@/shared/constants/error.constant.ts";
@@ -23,6 +27,13 @@ describe("Get Workspace", () => {
 
     expect(res.status).toBe(AUTH_STATUS_CODE.UNAUTHORIZED);
     expect(res.body.message).toBe(AUTH_MESSAGE.UNAUTHORIZED);
+  });
+
+  it('should return 400 when id format invalid', async () => {
+    const res = await user.get(WORKSPACE_TEST_ROUTE.GET_WORKSPACE("invalid-uuid"));
+
+    expect(res.status).toBe(ERROR_STATUS_CODE.BAD_REQUEST);
+    expect(res.body.errors[0].message).toBe(WORKSPACE_ERROR_VALIDATION.ID);
   });
 
   it('should return 404 when data not found', async () => {

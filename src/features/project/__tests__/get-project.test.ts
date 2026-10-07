@@ -3,7 +3,7 @@ import request from "supertest";
 import { authenticate } from "../../../../tests/helpers/auth.helper.ts";
 import { createTestProject } from "@/features/project/__tests__/helpers/create-test-project.ts";
 import app from "@/server.ts";
-import { PROJECT_NOT_FOUND, PROJECT_TEST_ROUTE } from "@/features/project/project.constant.ts";
+import { PROJECT_NOT_FOUND, PROJECT_SUCCESS_MESSAGE, PROJECT_TEST_ROUTE } from "@/features/project/project.constant.ts";
 import { AUTH_MESSAGE } from "@/shared/constants/auth.constants.ts";
 import { INVALID_UUID } from "@/shared/constants/test.constant.ts";
 
@@ -40,7 +40,7 @@ describe("Get Project", () => {
     const res = await user.get(PROJECT_TEST_ROUTE.GET_PROJECT_BY_ID(workspaceId, projectId));
 
     expect(res.status).toBe(200);
-    expect(res.body.message).toBe("Project fetched");
+    expect(res.body.message).toBe(PROJECT_SUCCESS_MESSAGE.GET_PROJECT_BY_ID);
     expect(res.body.data).toBeDefined();
   });
 })

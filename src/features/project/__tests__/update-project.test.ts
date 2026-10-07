@@ -4,7 +4,7 @@ import type { UpdateProjectDto } from "@/features/project/project.dto.ts";
 import { authenticate } from "../../../../tests/helpers/auth.helper.ts";
 import { createTestProject } from "@/features/project/__tests__/helpers/create-test-project.ts";
 import app from "@/server.ts";
-import { PROJECT_NOT_FOUND, PROJECT_TEST_ROUTE } from "@/features/project/project.constant.ts";
+import { PROJECT_NOT_FOUND, PROJECT_SUCCESS_MESSAGE, PROJECT_TEST_ROUTE } from "@/features/project/project.constant.ts";
 import { AUTH_MESSAGE } from "@/shared/constants/auth.constants.ts";
 import { INVALID_UUID } from "@/shared/constants/test.constant.ts";
 
@@ -45,7 +45,7 @@ describe("Update Project", () => {
     const res = await user.patch(PROJECT_TEST_ROUTE.UPDATE_PROJECT(workspaceId, projectId)).send(payload);
 
     expect(res.status).toBe(200);
-    expect(res.body.message).toBe("Project updated");
+    expect(res.body.message).toBe(PROJECT_SUCCESS_MESSAGE.UPDATE_PROJECT);
     expect(res.body.data).toBeDefined();
     expect(res.body.data.id).toBe(projectId);
   });

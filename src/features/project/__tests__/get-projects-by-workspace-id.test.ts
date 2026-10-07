@@ -2,7 +2,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import request from "supertest";
 import { authenticate } from "../../../../tests/helpers/auth.helper.ts";
 import app from "@/server.ts";
-import { PROJECT_TEST_ROUTE } from "@/features/project/project.constant.ts";
+import { PROJECT_SUCCESS_MESSAGE, PROJECT_TEST_ROUTE } from "@/features/project/project.constant.ts";
 import { createTestProject } from "@/features/project/__tests__/helpers/create-test-project.ts";
 import { AUTH_MESSAGE } from "@/shared/constants/auth.constants.ts";
 
@@ -30,6 +30,6 @@ describe("Get Project by Workspace", () => {
     expect(res.status).toBe(200);
     expect(res.body.data).toBeDefined();
     expect(res.body.data.length).toBeGreaterThan(0);
-    expect(res.body.message).toBe('Projects fetched');
+    expect(res.body.message).toBe(PROJECT_SUCCESS_MESSAGE.GET_PROJECT_BY_WORKSPACE_ID);
   });
 });

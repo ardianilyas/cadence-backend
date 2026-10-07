@@ -4,7 +4,7 @@ import { authenticate } from "../../../../tests/helpers/auth.helper.ts";
 import { createTestWorkspace } from "@/features/workspace/__tests__/helpers/create-test-workspace.ts";
 import app from "@/server.ts";
 import {
-  INVALID_WORKSPACE_ID,
+  WORKSPACE_ERROR_VALIDATION,
   WORKSPACE_NOT_FOUND,
   WORKSPACE_TEST_ROUTE
 } from "@/features/workspace/workspace.constant.ts";
@@ -39,7 +39,7 @@ describe("Delete Workspace", () => {
     const res = await user.delete(WORKSPACE_TEST_ROUTE.DELETE_WORKSPACE("invalid-uuid"));
 
     expect(res.status).toBe(ERROR_STATUS_CODE.BAD_REQUEST);
-    expect(res.body.errors[0].message).toBe(INVALID_WORKSPACE_ID);
+    expect(res.body.errors[0].message).toBe(WORKSPACE_ERROR_VALIDATION.ID);
   });
 
   it('should return 204 when data deleted', async () => {
