@@ -2,12 +2,20 @@ import { prisma } from "@/shared/lib/prisma.ts";
 import type { CreateWorkspaceDto, UpdateWorkspaceDto } from "@/features/workspace/workspace.dto.ts";
 import type { WorkspaceRole } from "../../../generated/prisma/enums.ts";
 import { WorkspacePolicy } from "@/features/workspace/workspace.policy.ts";
+import { workspaceWithMemberArgs } from "@/features/workspace/workspace.select.ts";
 
 export class WorkspaceService {
   async getWorkspacesByUserId(authorId: string) {
     return prisma.workspace.findMany({
       where: {
         authorId
+      },
+      include: {
+        _count: {
+          select: {
+            workspaceMembers: true
+          }
+        }
       }
     });
   }
@@ -17,15 +25,7 @@ export class WorkspaceService {
       where: {
         id
       },
-      // it should return user relation also in future
-      include: {
-        workspaceMembers: {
-          select: {
-            userId: true,
-            role: true,
-          }
-        }
-      }
+      include: workspaceWithMemberArgs
     });
   }
 
