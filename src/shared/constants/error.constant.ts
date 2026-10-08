@@ -11,5 +11,6 @@ export const ERROR_MESSAGE = {
   VALIDATOIN_FAILED: "Validation Error",
   UNAUTHORIZED: "Unauthorized",
   FORBIDDEN: "Forbidden",
-  FOREIGN_KEY_CONSTRAINED: "Foreign key constraint failed"
+  FOREIGN_KEY_CONSTRAINED: "Foreign key constraint failed",
+  CONFLICT: "A record with this value already exists",
 }

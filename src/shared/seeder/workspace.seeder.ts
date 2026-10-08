@@ -7,14 +7,22 @@ type InsertWorkspace = {
   authorId: string;
 }
 
-export async function seedWorkspace(userId: string, length: number = 1) {
-  const data: InsertWorkspace[] = Array.from({ length }).map(() => ({
+export async function seedWorkspace(userId: string) {
+  const data: InsertWorkspace = {
     name: faker.lorem.word(),
     description: faker.lorem.sentence(),
     authorId: userId
-  }));
+  };
 
-  return prisma.workspace.createManyAndReturn({
-    data
+  return prisma.workspace.create({
+    data: {
+      ...data,
+      workspaceMembers: {
+        create: {
+          userId,
+          role: "Project_Manager"
+        }
+      }
+    }
   });
 }

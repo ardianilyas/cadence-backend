@@ -4,23 +4,31 @@ import { authenticate } from "../../../../tests/helpers/auth.helper.ts";
 import { createTestWorkspace } from "@/features/workspace/__tests__/helpers/create-test-workspace.ts";
 import app from "@/server.ts";
 import {
-  WORKSPACE_ERROR_VALIDATION,
+  WORKSPACE_ERROR_VALIDATION, WORKSPACE_FORBIDDEN_MESSAGE,
   WORKSPACE_NOT_FOUND,
   WORKSPACE_TEST_ROUTE
 } from "@/features/workspace/workspace.constant.ts";
 import type { UpdateWorkspaceDto } from "@/features/workspace/workspace.dto.ts";
 import { ERROR_MESSAGE, ERROR_STATUS_CODE } from "@/shared/constants/error.constant.ts";
 import { INVALID_UUID } from "@/shared/constants/test.constant.ts";
+import { addUserToWorkspace } from "@/features/workspace/__tests__/helpers/add-user-to-workspace.ts";
 
 describe("Update Workspace", () => {
   let user: ReturnType<typeof request.agent>;
+  let user2: ReturnType<typeof request.agent>;
   let workspaceId: string;
   let payload: UpdateWorkspaceDto;
 
   beforeAll(async () => {
     const { agent, userId } = await authenticate();
+    const { agent: agent2, userId: userId2 } = await authenticate();
+
     workspaceId = await createTestWorkspace(userId);
+    await addUserToWorkspace(userId2, workspaceId);
+
     user = agent;
+    user2 = agent2;
+
     payload = {
       name: "Updated Workspace",
       description: "Updated workspace"
@@ -47,6 +55,13 @@ describe("Update Workspace", () => {
 
     expect(res.status).toBe(ERROR_STATUS_CODE.NOT_FOUND);
     expect(res.body.message).toBe(WORKSPACE_NOT_FOUND);
+  });
+
+  it('should return 403 when user is not Project Manager', async () => {
+    const res = await user2.patch(WORKSPACE_TEST_ROUTE.UPDATE_WORKSPACE(workspaceId)).send(payload);
+
+    expect(res.status).toBe(403);
+    expect(res.body.message).toBe(WORKSPACE_FORBIDDEN_MESSAGE.UPDATE);
   });
 
   it('should return 200 when data is valid and updated', async () => {

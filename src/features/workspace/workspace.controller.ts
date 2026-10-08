@@ -30,13 +30,13 @@ export class WorkspaceController {
   updateWorkspace = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
     const id = validate(getWorkspaceDto, req.params.id);
     const data = validate(updateWorkspaceDto, req.body);
-    const workspace = await this.workspaceService.updateWorkspace(data, id);
+    const workspace = await this.workspaceService.updateWorkspace(data, id, req.auth.user.id);
     return sendSuccess(res, WORKSPACE_SUCCESS_MESSAGE.UPDATE_WORKSPACE, workspace);
   });
 
   deleteWorkspace = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
     const id = validate(getWorkspaceDto, req.params.id);
-    await this.workspaceService.deleteWorkspace(id);
+    await this.workspaceService.deleteWorkspace(id, req.auth.user.id);
     return sendSuccess(res, "", null, 204);
   });
 }

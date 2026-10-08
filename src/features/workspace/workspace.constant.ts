@@ -22,6 +22,11 @@ export const WORKSPACE_SUCCESS_MESSAGE = {
   UPDATE_WORKSPACE: "Workspace updated successfully",
 }
 
+export const WORKSPACE_FORBIDDEN_MESSAGE = {
+  UPDATE: "You can't modified this workspace",
+  DELETE: "You can't delete this workspace"
+}
+
 const WORKSPACE_ROUTE_PREFIX = '/api/workspaces';
 
 export const WORKSPACE_TEST_ROUTE = {
