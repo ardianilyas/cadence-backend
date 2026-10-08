@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "@/shared/db";
+import { env } from "@/shared/config/env.ts";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -11,8 +12,8 @@ export const auth = betterAuth({
   },
   socialProviders: {
     github: {
-      clientId: "",
-      clientSecret: ""
+      clientId: env.GITHUB_CLIENT_ID,
+      clientSecret: env.GITHUB_CLIENT_SECRET,
     },
   },
   user: {

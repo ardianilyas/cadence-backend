@@ -18,6 +18,14 @@ const envSchema = z.object({
   BETTER_AUTH_URL: z.string({
     error: "BETTER_AUTH_URL is required",
   }),
+
+  GITHUB_CLIENT_ID: z.string({
+    error: "GITHUB_CLIENT_ID is required",
+  }),
+
+  GITHUB_CLIENT_SECRET: z.string({
+    error: "GITHUB_CLIENT_SECRET is required",
+  })
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
