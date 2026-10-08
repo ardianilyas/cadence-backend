@@ -25,6 +25,11 @@ export const PROJECT_SUCCESS_MESSAGE = {
   UPDATE_PROJECT: "Project updated successfully",
 }
 
+export const PROJECT_FORBIDDEN_MESSAGE = {
+  UPDATE: "You can't edit this project",
+  DELETE: "You can't delete this project"
+}
+
 export const PROJECT_TEST_ROUTE = {
   GET_PROJECTS_BY_WORKSPACE_ID: (workspaceId: string) => `/api/workspaces/${workspaceId}/projects`,
   GET_PROJECT_BY_ID: (workspaceId: string, id: string) => `/api/workspaces/${workspaceId}/projects/${id}`,

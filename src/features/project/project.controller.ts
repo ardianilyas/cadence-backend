@@ -36,14 +36,14 @@ export class ProjectController {
   updateProject = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
     const projectId = validate(getProjectDto, req.params.id);
     const input = validate(updateProjectDto, req.body);
-    const project = await this.projectService.updateProject(input, projectId);
+    const project = await this.projectService.updateProject(input, projectId, req.auth.user.id);
 
     return sendSuccess(res, PROJECT_SUCCESS_MESSAGE.UPDATE_PROJECT, project);
   });
 
   deleteProject = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
     const projectId = validate(getProjectDto, req.params.id);
-    await this.projectService.deleteProject(projectId);
+    await this.projectService.deleteProject(projectId, req.auth.user.id);
 
     return sendSuccess(res, "", null, 204);
   });

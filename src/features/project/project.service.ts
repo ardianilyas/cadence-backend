@@ -1,5 +1,6 @@
 import { prisma } from "@/shared/lib/prisma.ts";
 import type { CreateProjectDto, UpdateProjectDto } from "@/features/project/project.dto.ts";
+import { ProjectPolicy } from "@/features/project/project.policy.ts";
 
 export class ProjectService {
   async getProjectsByWorkspaceId(workspaceId: string) {
@@ -28,16 +29,41 @@ export class ProjectService {
     });
   }
 
-  async updateProject(data: UpdateProjectDto, id: string) {
+  async updateProject(data: UpdateProjectDto, id: string, userId: string) {
+    const project = await this.getProjectAndReturnAuthorId(id);
+
+    ProjectPolicy.canUpdate({
+      authorId: project.authorId,
+      userId
+    });
+
     return prisma.project.update({
       where: { id },
       data
     });
   }
 
-  async deleteProject(id: string) {
+  async deleteProject(id: string, userId: string) {
+    const project = await this.getProjectAndReturnAuthorId(id);
+
+    ProjectPolicy.canDelete({
+      authorId: project.authorId,
+      userId
+    });
+
     return prisma.project.delete({
       where: { id }
+    });
+  }
+
+  private async getProjectAndReturnAuthorId(id: string) {
+    return prisma.project.findUniqueOrThrow({
+      where: {
+        id
+      },
+      select: {
+        authorId: true
+      }
     });
   }
 }
