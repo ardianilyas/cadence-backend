@@ -1,5 +1,6 @@
 import { toNodeHandler } from "better-auth/node";
 import express from "express";
+import cors from "cors";
 import { auth } from "@/shared/lib/auth";
 import { errorHandler } from "@/shared/middlewares/error-handler";
 import { httpLogger } from "@/shared/middlewares/http-logger";
@@ -12,9 +13,16 @@ import apiRoute from "@/shared/routes";
 const app = express();
 const PORT = env.PORT;
 
-app.use(httpLogger);
+app.use(
+  cors({
+    origin: "http://localhost:3001",
+    credentials: true,
+  }),
+);
 
 app.all("/api/auth/*splat", toNodeHandler(auth));
+
+app.use(httpLogger);
 
 app.use(express.json());
 
