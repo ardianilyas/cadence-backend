@@ -9,7 +9,12 @@
     "postinstall": "prisma generate",
     "db:push": "prisma db push",
     "db:generate": "prisma generate",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "db:seed": "bun src/shared/seeder/user.seeder.ts",
+    "seed:user": "bun src/shared/seeder/user.seeder.ts"
+  },
+  "prisma": {
+    "seed": "bun src/shared/seeder/user.seeder.ts"
   },
   "devDependencies": {
     "@faker-js/faker": "^10.6.0",

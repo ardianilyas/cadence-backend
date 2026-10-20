@@ -19,6 +19,8 @@ router.post("/", workspaceController.createWorkspace);
 router.patch("/:id", workspaceController.updateWorkspace);
 router.delete("/:id", workspaceController.deleteWorkspace);
 
+router.get("/:id/available-users", memberController.getUsersNotInWorkspace);
 router.post("/:id/members", memberController.addMemberToWorkspace);
+router.delete("/:id/members/:memberId", memberController.removeMemberToWorkspace);
 
 export default router;

@@ -17,4 +17,16 @@ export class MemberController {
     const workspaceMember = await this.memberService.addMemberToWorkspace(data, workspaceId, req.auth.user.id);
     return sendSuccess(res, MEMBER_SUCCESS_MESSAGE.ADD_MEMBER_TO_WORKSPACE, workspaceMember, 201);
   });
+
+  removeMemberToWorkspace = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const { id, memberId } = req.params;
+    await this.memberService.removeMemberToWorkspace(id as string, memberId as string, req.auth.user.id);
+    return sendSuccess(res, "", null, 204);
+  })
+
+  getUsersNotInWorkspace = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const workspaceId = validate(getWorkspaceDto, req.params.id);
+    const users = await this.memberService.getUsersNotInWorkspace(workspaceId);
+    return sendSuccess(res, MEMBER_SUCCESS_MESSAGE.GET_USERS_NOT_IN_WORKSPACE, users);
+  });
 }

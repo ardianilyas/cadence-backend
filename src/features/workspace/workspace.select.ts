@@ -3,6 +3,7 @@ import type { WorkspaceInclude } from "../../../generated/prisma/models/Workspac
 export const workspaceWithMemberArgs = {
   workspaceMembers: {
     select: {
+      id: true,
       userId: true,
       role: true,
       user: {

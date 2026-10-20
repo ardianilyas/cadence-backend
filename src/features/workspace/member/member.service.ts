@@ -18,6 +18,53 @@ export class MemberService {
     });
   }
 
+  async removeMemberToWorkspace(workspaceId: string, memberId: string, userId: string) {
+    const workspaceMember = await this.getMemberWorkspace(workspaceId, userId);
+
+    MemberPolicy.canRemoveMember({
+      role: workspaceMember.role
+    });
+
+    return prisma.workspaceMember.delete({
+      where: {
+        workspaceId_userId: {
+          workspaceId,
+          userId: memberId
+        }
+      }
+    });
+  }
+
+  async getUsersNotInWorkspace(workspaceId: string) {
+    const workspace = await this.getWorkspace(workspaceId);
+
+    return prisma.user.findMany({
+      where: {
+        workspaceMembers: {
+          none: {
+            workspaceId: workspace.id
+          }
+        }
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true
+      },
+      orderBy: {
+        name: 'asc'
+      }
+    });
+  }
+
+  private async getWorkspace(id: string) {
+    return prisma.workspace.findUniqueOrThrow({
+      where: {
+        id
+      }
+    });
+  }
+
   private async getMemberWorkspace(workspaceId: string, userId: string) {
     return prisma.workspaceMember.findUniqueOrThrow({
       where: {
