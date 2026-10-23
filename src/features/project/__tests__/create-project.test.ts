@@ -2,23 +2,33 @@ import { beforeAll, describe, expect, it } from "vitest";
 import request from "supertest";
 import { authenticate } from "../../../../tests/helpers/auth.helper.ts";
 import app from "@/server.ts";
-import { PROJECT_SUCCESS_MESSAGE, PROJECT_TEST_ROUTE } from "@/features/project/project.constant.ts";
+import {
+  PROJECT_FORBIDDEN_MESSAGE,
+  PROJECT_SUCCESS_MESSAGE,
+  PROJECT_TEST_ROUTE
+} from "@/features/project/project.constant.ts";
 import { createTestWorkspace } from "@/features/workspace/__tests__/helpers/create-test-workspace.ts";
 import type { CreateProjectDto } from "@/features/project/project.dto.ts";
 import { addDays, addMonths } from "date-fns";
 import { AUTH_MESSAGE } from "@/shared/constants/auth.constants.ts";
-import { ERROR_MESSAGE } from "@/shared/constants/error.constant.ts";
+import { ERROR_MESSAGE, ERROR_STATUS_CODE } from "@/shared/constants/error.constant.ts";
 import { INVALID_UUID } from "@/shared/constants/test.constant.ts";
+import { addUserToWorkspace } from "@/features/workspace/__tests__/helpers/add-user-to-workspace.ts";
 
 describe("Create Project", () => {
   let user: ReturnType<typeof request.agent>;
+  let user2: ReturnType<typeof request.agent>;
   let workspaceId: string;
   let payload: CreateProjectDto;
 
   beforeAll(async () => {
     const { agent, userId } = await authenticate();
+    const { agent: agent2, userId: userId2 } = await authenticate();
     user = agent;
+    user2 = agent2;
+
     workspaceId = await createTestWorkspace(userId);
+    await addUserToWorkspace(userId2, workspaceId);
 
     const startDate: Date = addDays(new Date(), 1);
     const dueDate: Date = addMonths(new Date(), 1);
@@ -48,11 +58,18 @@ describe("Create Project", () => {
     expect(res.body.errors).toBeInstanceOf(Object);
   });
 
-  it('should return 400 when workspace id is not found', async () => {
+  it('should return 404 when workspace id is not found', async () => {
     const res = await user.post(PROJECT_TEST_ROUTE.CREATE_PROJECT(INVALID_UUID)).send(payload);
 
-    expect(res.status).toBe(400);
-    expect(res.body.message).toBe(ERROR_MESSAGE.FOREIGN_KEY_CONSTRAINED);
+    expect(res.status).toBe(404);
+    expect(res.body.message).toBe("Workspace not found");
+  });
+
+  it('should return 403 when user is not Project Manager', async () => {
+    const res = await user2.post(PROJECT_TEST_ROUTE.CREATE_PROJECT(workspaceId)).send(payload);
+
+    expect(res.status).toBe(ERROR_STATUS_CODE.FORBIDDEN);
+    expect(res.body.message).toBe(PROJECT_FORBIDDEN_MESSAGE.CREATE);
   });
 
   it('should return 200 when data is valid and project created', async () => {
