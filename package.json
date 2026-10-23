@@ -10,7 +10,7 @@
     "db:push": "prisma db push",
     "db:generate": "prisma generate",
     "db:studio": "prisma studio",
-    "db:seed": "bun src/shared/seeder/user.seeder.ts",
+    "db:seed": "bun src/shared/seeder/index.ts",
     "seed:user": "bun src/shared/seeder/user.seeder.ts"
   },
   "prisma": {
