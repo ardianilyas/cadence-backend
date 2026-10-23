@@ -20,6 +20,18 @@ export class ProjectService {
   }
 
   async createProject(input: CreateProjectDto, authorId: string, workspaceId: string) {
+    const workspace = await this.getWorkspaceAndReturnRole(authorId, workspaceId);
+
+    const role = workspace.workspaceMembers[0]?.role;
+
+    if (!role) {
+      throw new Error("User is not a member of this workspace");
+    }
+
+    ProjectPolicy.canCreate({
+      role
+    });
+
     return prisma.project.create({
       data: {
         ...input,
@@ -53,6 +65,24 @@ export class ProjectService {
 
     return prisma.project.delete({
       where: { id }
+    });
+  }
+
+  private getWorkspaceAndReturnRole(userId: string, workspaceId: string) {
+    return prisma.workspace.findUniqueOrThrow({
+      where: {
+        id: workspaceId
+      },
+      select: {
+        workspaceMembers: {
+          where: {
+            userId,
+          },
+          select: {
+            role: true
+          }
+        }
+      }
     });
   }
 

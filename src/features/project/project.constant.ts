@@ -26,6 +26,7 @@ export const PROJECT_SUCCESS_MESSAGE = {
 }
 
 export const PROJECT_FORBIDDEN_MESSAGE = {
+  CREATE: "You can't create project here",
   UPDATE: "You can't edit this project",
   DELETE: "You can't delete this project"
 }
