@@ -35,3 +35,9 @@ export const TASK_SUCCESS_MESSAGE = {
   CREATE_TASK: "Task created",
   UPDATE_TASK: "Task updated",
 }
+
+export const TASK_FORBIDDEN_MESSAGE = {
+  CREATE: "You can't create task in this project",
+  UPDATE: "You can't edit this task",
+  DELETE: "You can't delete this task"
+}

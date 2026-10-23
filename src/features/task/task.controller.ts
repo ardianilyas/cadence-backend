@@ -32,13 +32,13 @@ export class TaskController {
   updateTask = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
     const taskId = validate(getTaskDto, req.params.id);
     const data = validate(updateTaskDto, req.body);
-    const task = await this.taskService.updateTask(data, taskId);
+    const task = await this.taskService.updateTask(data, taskId, req.auth.user.id);
     return sendSuccess(res, TASK_SUCCESS_MESSAGE.UPDATE_TASK, task);
   });
 
   deleteTask = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
     const taskId = validate(getTaskDto, req.params.id);
-    await this.taskService.deleteTask(taskId);
+    await this.taskService.deleteTask(taskId, req.auth.user.id);
     return sendSuccess(res, "", null, 204);
   });
 }
