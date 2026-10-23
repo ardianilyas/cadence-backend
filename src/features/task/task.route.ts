@@ -13,6 +13,7 @@ router.get("/", taskController.getTasksByProjectId);
 router.get("/:id", taskController.getTask);
 router.post("/", taskController.createTask);
 router.patch("/:id", taskController.updateTask);
+router.patch("/:id/status", taskController.updateTaskStatus);
 router.delete("/:id", taskController.deleteTask);
 
 export default router;

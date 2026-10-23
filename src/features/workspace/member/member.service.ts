@@ -57,6 +57,28 @@ export class MemberService {
     });
   }
 
+  async getWorkspaceMembers(workspaceId: string) {
+    await this.getWorkspace(workspaceId);
+
+    return prisma.workspaceMember.findMany({
+      where: {
+        workspaceId
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true
+          }
+        }
+      },
+      orderBy: {
+        joinedAt: 'asc'
+      }
+    });
+  }
+
   private async getWorkspace(id: string) {
     return prisma.workspace.findUniqueOrThrow({
       where: {

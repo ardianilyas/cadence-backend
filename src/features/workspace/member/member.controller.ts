@@ -29,4 +29,10 @@ export class MemberController {
     const users = await this.memberService.getUsersNotInWorkspace(workspaceId);
     return sendSuccess(res, MEMBER_SUCCESS_MESSAGE.GET_USERS_NOT_IN_WORKSPACE, users);
   });
+
+  getWorkspaceMembers = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const workspaceId = validate(getWorkspaceDto, req.params.id);
+    const members = await this.memberService.getWorkspaceMembers(workspaceId);
+    return sendSuccess(res, MEMBER_SUCCESS_MESSAGE.GET_WORKSPACE_MEMBERS, members);
+  });
 }

@@ -1,6 +1,7 @@
 import { prisma } from "@/shared/lib/prisma.ts";
-import type { CreateTaskDto, UpdateTaskDto } from "@/features/task/task.dto.ts";
+import type { CreateTaskDto, UpdateTaskDto, UpdateTaskStatusDto } from "@/features/task/task.dto.ts";
 import { TaskPolicy } from "@/features/task/task.policy.ts";
+import { taskWithRelationsArgs } from "@/features/task/task.select.ts";
 
 export class TaskService {
   async getTasksByProjectId(projectId: string) {
@@ -17,6 +18,7 @@ export class TaskService {
       where: {
         projectId: project.id,
       },
+      include: taskWithRelationsArgs
     });
   }
 
@@ -42,6 +44,17 @@ export class TaskService {
       data: {
         ...data,
         createdById
+      }
+    });
+  }
+
+  async updateTaskStatus(id: string, status: UpdateTaskStatusDto) {
+    return prisma.task.update({
+      where: {
+        id
+      },
+      data: {
+        status
       }
     });
   }

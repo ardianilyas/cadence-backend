@@ -13,7 +13,9 @@ export const createTaskDto = z.object({
 });
 export const updateTaskDto = createTaskDto.partial();
 export const getTaskDto = z.uuid({ error: TASK_ERROR_VALIDATION.ID });
+export const updateTaskStatusDto = z.enum(TaskStatus);
 
 export type CreateTaskDto = z.infer<typeof createTaskDto>;
 export type UpdateTaskDto = z.infer<typeof updateTaskDto>;
 export type GetTaskDto = z.infer<typeof getTaskDto>;
+export type UpdateTaskStatusDto = z.infer<typeof updateTaskStatusDto>;

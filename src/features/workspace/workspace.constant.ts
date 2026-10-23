@@ -15,6 +15,7 @@ export const MEMBER_SUCCESS_MESSAGE = {
   ADD_MEMBER_TO_WORKSPACE: "Member added to workspace",
   REMOVE_MEMBER_TO_WORKSPACE: "Member removed to workspace",
   GET_USERS_NOT_IN_WORKSPACE: "Users not in workspace retrieved successfully",
+  GET_WORKSPACE_MEMBERS: "Workspace members retrieved successfully",
 }
 
 export const WORKSPACE_SUCCESS_MESSAGE = {
@@ -38,6 +39,7 @@ export const WORKSPACE_TEST_ROUTE = {
   UPDATE_WORKSPACE: (id: string) => `${WORKSPACE_ROUTE_PREFIX}/${id}`,
   DELETE_WORKSPACE: (id: string) => `${WORKSPACE_ROUTE_PREFIX}/${id}`,
   GET_AVAILABLE_USERS: (id: string) => `${WORKSPACE_ROUTE_PREFIX}/${id}/available-users`,
+  GET_WORKSPACE_MEMBERS: (id: string) => `${WORKSPACE_ROUTE_PREFIX}/${id}/members`,
   ADD_WORKSPACE_MEMBER: (id: string) => `${WORKSPACE_ROUTE_PREFIX}/${id}/members`,
   REMOVE_MEMBER_TO_WORKSPACE: (id: string, memberId: string) => `${WORKSPACE_ROUTE_PREFIX}/${id}/members/${memberId}`,
 }

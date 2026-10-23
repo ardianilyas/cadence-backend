@@ -5,7 +5,7 @@ import type { Response } from "express";
 import { validate } from "@/shared/utils/validate.ts";
 import { getProjectDto } from "@/features/project/project.dto.ts";
 import { sendSuccess } from "@/shared/utils/response.ts";
-import { createTaskDto, getTaskDto, updateTaskDto } from "@/features/task/task.dto.ts";
+import { createTaskDto, getTaskDto, updateTaskDto, updateTaskStatusDto } from "@/features/task/task.dto.ts";
 import { TASK_SUCCESS_MESSAGE } from "@/features/task/task.constant.ts";
 
 export class TaskController {
@@ -28,6 +28,13 @@ export class TaskController {
     const task = await this.taskService.createTask(data, req.auth.user.id);
     return sendSuccess(res, TASK_SUCCESS_MESSAGE.CREATE_TASK, task, 201);
   });
+
+  updateTaskStatus = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const id = validate(getTaskDto, req.params.id);
+    const status = validate(updateTaskStatusDto, req.body);
+    const task = await this.taskService.updateTaskStatus(id, status);
+    return sendSuccess(res, TASK_SUCCESS_MESSAGE.UPDATE_TASK_STATUS, task);
+  })
 
   updateTask = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
     const taskId = validate(getTaskDto, req.params.id);

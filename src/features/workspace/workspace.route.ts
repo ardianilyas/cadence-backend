@@ -20,6 +20,7 @@ router.patch("/:id", workspaceController.updateWorkspace);
 router.delete("/:id", workspaceController.deleteWorkspace);
 
 router.get("/:id/available-users", memberController.getUsersNotInWorkspace);
+router.get("/:id/members", memberController.getWorkspaceMembers);
 router.post("/:id/members", memberController.addMemberToWorkspace);
 router.delete("/:id/members/:memberId", memberController.removeMemberToWorkspace);
 

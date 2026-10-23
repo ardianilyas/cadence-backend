@@ -34,6 +34,7 @@ export const TASK_SUCCESS_MESSAGE = {
   GET_TASK: "Task fetched",
   CREATE_TASK: "Task created",
   UPDATE_TASK: "Task updated",
+  UPDATE_TASK_STATUS: "Task status updated",
 }
 
 export const TASK_FORBIDDEN_MESSAGE = {
