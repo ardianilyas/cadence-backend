@@ -2,23 +2,32 @@ import { beforeAll, describe, expect, it } from "vitest";
 import request from "supertest";
 import { authenticate } from "../../../../tests/helpers/auth.helper.ts";
 import { createTestTask } from "@/features/task/__tests__/helpers/create-test-task.ts";
+import { addUserToWorkspace } from "@/features/workspace/__tests__/helpers/add-user-to-workspace.ts";
 import app from "@/server.ts";
-import { TASK_ERROR_VALIDATION, TASK_NOT_FOUND, TASK_TEST_ROUTE } from "@/features/task/task.constant.ts";
+import { TASK_ERROR_VALIDATION, TASK_NOT_FOUND, TASK_TEST_ROUTE, TASK_FORBIDDEN_MESSAGE } from "@/features/task/task.constant.ts";
 import { AUTH_MESSAGE } from "@/shared/constants/auth.constants.ts";
 import { ERROR_MESSAGE } from "@/shared/constants/error.constant.ts";
 import { INVALID_UUID } from "@/shared/constants/test.constant.ts";
 
 describe("Delete Task", () => {
   let user: ReturnType<typeof request.agent>;
+  let developerUser: ReturnType<typeof request.agent>;
   let projectId: string;
+  let workspaceId: string;
   let taskId: string;
 
   beforeAll(async () => {
     const { agent, userId } = await authenticate();
     user = agent;
-    const { projectId: testProjectId, taskId: testTaskId } = await createTestTask(userId);
+    const { projectId: testProjectId, taskId: testTaskId, workspaceId: testWorkspaceId } = await createTestTask(userId);
     projectId = testProjectId;
     taskId = testTaskId;
+    workspaceId = testWorkspaceId;
+
+    // Create a developer user and add to workspace
+    const { agent: devAgent, userId: devUserId } = await authenticate();
+    developerUser = devAgent;
+    await addUserToWorkspace(devUserId, workspaceId, "Developer");
   });
 
   it('should return 401 when user is unauthorized', async () => {
@@ -41,6 +50,13 @@ describe("Delete Task", () => {
 
     expect(res.status).toBe(404);
     expect(res.body.message).toBe(TASK_NOT_FOUND);
+  });
+
+  it('should return 403 when user is not Project Manager', async () => {
+    const res = await developerUser.delete(TASK_TEST_ROUTE.DELETE_TASK(projectId, taskId));
+
+    expect(res.status).toBe(403);
+    expect(res.body.message).toBe(TASK_FORBIDDEN_MESSAGE.DELETE);
   });
 
   it('should return 204 when task deleted', async () => {

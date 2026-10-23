@@ -3,12 +3,14 @@ import request from "supertest";
 import type { UpdateTaskDto } from "@/features/task/task.dto.ts";
 import { authenticate } from "../../../../tests/helpers/auth.helper.ts";
 import { createTestTask } from "@/features/task/__tests__/helpers/create-test-task.ts";
+import { addUserToWorkspace } from "@/features/workspace/__tests__/helpers/add-user-to-workspace.ts";
 import app from "@/server.ts";
 import {
   TASK_ERROR_VALIDATION,
   TASK_NOT_FOUND,
   TASK_SUCCESS_MESSAGE,
-  TASK_TEST_ROUTE
+  TASK_TEST_ROUTE,
+  TASK_FORBIDDEN_MESSAGE
 } from "@/features/task/task.constant.ts";
 import { AUTH_MESSAGE } from "@/shared/constants/auth.constants.ts";
 import { ERROR_MESSAGE } from "@/shared/constants/error.constant.ts";
@@ -16,16 +18,24 @@ import { INVALID_UUID } from "@/shared/constants/test.constant.ts";
 
 describe("Update Task", () => {
   let user: ReturnType<typeof request.agent>;
+  let developerUser: ReturnType<typeof request.agent>;
   let projectId: string;
+  let workspaceId: string;
   let taskId: string;
   let payload: UpdateTaskDto;
 
   beforeAll(async () => {
     const { agent, userId } = await authenticate();
     user = agent;
-    const { projectId: testProjectId, taskId: testTaskId } = await createTestTask(userId);
+    const { projectId: testProjectId, taskId: testTaskId, workspaceId: testWorkspaceId } = await createTestTask(userId);
     projectId = testProjectId;
     taskId = testTaskId;
+    workspaceId = testWorkspaceId;
+
+    // Create a developer user and add to workspace
+    const { agent: devAgent, userId: devUserId } = await authenticate();
+    developerUser = devAgent;
+    await addUserToWorkspace(devUserId, workspaceId, "Developer");
 
     payload = {
       title: "Update Task"
@@ -62,5 +72,12 @@ describe("Update Task", () => {
     expect(res.body.message).toBe(TASK_SUCCESS_MESSAGE.UPDATE_TASK);
     expect(res.body.data).toBeDefined();
     expect(res.body.data.title).toBe(payload.title);
+  });
+
+  it('should return 403 when user is not Project Manager', async () => {
+    const res = await developerUser.patch(TASK_TEST_ROUTE.UPDATE_TASK(projectId, taskId)).send(payload);
+
+    expect(res.status).toBe(403);
+    expect(res.body.message).toBe(TASK_FORBIDDEN_MESSAGE.UPDATE);
   });
 });

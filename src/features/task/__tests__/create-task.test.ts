@@ -2,8 +2,9 @@ import { beforeAll, describe, expect, it } from "vitest";
 import request from "supertest";
 import { authenticate } from "../../../../tests/helpers/auth.helper.ts";
 import { createTestProject } from "@/features/project/__tests__/helpers/create-test-project.ts";
+import { addUserToWorkspace } from "@/features/workspace/__tests__/helpers/add-user-to-workspace.ts";
 import app from "@/server.ts";
-import { TASK_SUCCESS_MESSAGE, TASK_TEST_ROUTE } from "@/features/task/task.constant.ts";
+import { TASK_SUCCESS_MESSAGE, TASK_TEST_ROUTE, TASK_FORBIDDEN_MESSAGE } from "@/features/task/task.constant.ts";
 import { AUTH_MESSAGE } from "@/shared/constants/auth.constants.ts";
 import type { CreateTaskDto } from "@/features/task/task.dto.ts";
 import { addDays } from "date-fns";
@@ -11,14 +12,23 @@ import { ERROR_MESSAGE } from "@/shared/constants/error.constant.ts";
 
 describe("Create Task", () => {
   let user: ReturnType<typeof request.agent>;
+  let developerUser: ReturnType<typeof request.agent>;
   let projectId: string;
+  let workspaceId: string;
   let payload: CreateTaskDto;
 
   beforeAll(async () => {
     const { agent, userId } = await authenticate();
     user = agent;
-    const { projectId: testProjectId } = await createTestProject(userId);
+    const { projectId: testProjectId, workspaceId: testWorkspaceId } = await createTestProject(userId);
     projectId = testProjectId;
+    workspaceId = testWorkspaceId;
+    
+    // Create a developer user and add to workspace
+    const { agent: devAgent, userId: devUserId } = await authenticate();
+    developerUser = devAgent;
+    await addUserToWorkspace(devUserId, workspaceId, "Developer");
+    
     payload = {
       title: "Authentication Feature",
       description: "Add authentication feature",
@@ -56,5 +66,12 @@ describe("Create Task", () => {
     expect(res.body.data.status).toBe(payload.status);
     expect(res.body.data.priority).toBe(payload.priority);
     expect(res.body.data.dueDate).toBe(payload.dueDate.toISOString());
+  });
+
+  it('should return 403 when user is not Project Manager', async () => {
+    const res = await developerUser.post(TASK_TEST_ROUTE.CREATE_TASK(projectId)).send(payload);
+
+    expect(res.status).toBe(403);
+    expect(res.body.message).toBe(TASK_FORBIDDEN_MESSAGE.CREATE);
   });
 });
