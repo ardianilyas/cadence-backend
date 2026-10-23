@@ -31,7 +31,11 @@ export class TaskController {
 
   updateTaskStatus = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
     const id = validate(getTaskDto, req.params.id);
-    const status = validate(updateTaskStatusDto, req.body);
+    const statusInput =
+      typeof req.body === "object" && req.body !== null && "status" in req.body
+        ? req.body.status
+        : req.body;
+    const status = validate(updateTaskStatusDto, statusInput);
     const task = await this.taskService.updateTaskStatus(id, status);
     return sendSuccess(res, TASK_SUCCESS_MESSAGE.UPDATE_TASK_STATUS, task);
   })

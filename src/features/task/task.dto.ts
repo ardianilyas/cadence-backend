@@ -9,7 +9,7 @@ export const createTaskDto = z.object({
   priority: z.enum(TaskPriority),
   dueDate: z.coerce.date().min(new Date(), { error: TASK_ERROR_VALIDATION.DUE_DATE.MIN }),
   projectId: z.uuid({ error: TASK_ERROR_VALIDATION.PROJECT_ID.UUID }),
-  assigneeId: z.uuid({ error: TASK_ERROR_VALIDATION.ASSIGNEE_ID.UUID }).optional(),
+  assigneeId: z.string().min(1, { error: "Assignee is required" }),
 });
 export const updateTaskDto = createTaskDto.partial();
 export const getTaskDto = z.uuid({ error: TASK_ERROR_VALIDATION.ID });

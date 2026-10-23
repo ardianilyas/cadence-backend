@@ -54,8 +54,10 @@ export class TaskService {
         id
       },
       data: {
-        status
-      }
+        status,
+        completedAt: status === "DONE" ? new Date() : null,
+      },
+      include: taskWithRelationsArgs,
     });
   }
 
